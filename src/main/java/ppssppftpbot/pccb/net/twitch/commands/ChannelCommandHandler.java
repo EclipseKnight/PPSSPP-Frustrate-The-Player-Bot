@@ -28,16 +28,6 @@ public class ChannelCommandHandler {
 				//execute command
 				TwitchCommandWebSocketSend.execute(event, arg);
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 		}
 	}
 }
