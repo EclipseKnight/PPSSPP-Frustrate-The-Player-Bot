@@ -1,0 +1,47 @@
+########################################################################################
+#                                                                                      #
+#      This is the configuration for the Twitch API portion of the application.        #
+#      Read and input the apropriate information.                                      #
+#                                                                                      #
+########################################################################################
+
+bot:
+    # Name of your bot
+    name: PPSSPPFTPBot
+
+    # Current version of your bot
+    version: 0.1
+
+# Application - API Settings
+api:
+    # Twitch Application Client Id (You can get it here: https://twitchtokengenerator.com/)
+    twitch_client_id: 
+
+    # Twitch Application Client Secret (You can get it here: https://twitchtokengenerator.com/)
+    twitch_client_secret: 
+
+# Credentials
+credentials:
+    # OAuth Token for IRC User (You can get yours here: http://twitchapps.com/tmi/)
+    irc: 
+
+# Channels - The bot will connect to all listed channels. (needed for message events).
+channels:
+    - EclipsesKnight
+    - The_Origin_Hunters
+    
+#Listener Channels - all of the channels the bot will listen to for fired events (go live, offline, follows, etc)
+listener_channels:
+   - EclipsesKnight
+   - The_Origin_Hunters
+   
+   
+prefix: "!c "
+
+features:
+   twitch_command_websocket_send:
+      enabled: true
+      mod_only: true
+      name: send
+      channels: 
+         - EclipsesKnight

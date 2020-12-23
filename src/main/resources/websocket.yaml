@@ -1,0 +1,13 @@
+########################################################################################
+#                                                                                      #
+#      This is the configuration for the WebSocket portion of the application.         #
+#      Read and input the apropriate information.                                      #
+#                                                                                      #
+########################################################################################
+
+# WebSocket server uri
+server_uri: ws://localhost:57197/debugger
+
+# How long it tries to reconnect before it times out (seconds) 
+# Reconnect can fail earlier than the time set. Reason for this is in case of a slow connection. 
+web_socket_reconnect_timeout: 30
