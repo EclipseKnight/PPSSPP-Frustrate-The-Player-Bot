@@ -35,7 +35,7 @@ listener_channels:
    - EclipsesKnight
    - The_Origin_Hunters
    
-   
+#command prefix
 prefix: "!c "
 
 features:
@@ -45,3 +45,10 @@ features:
       name: send
       channels: 
          - EclipsesKnight
+         
+#snippets to send to the debugger. Have to escape double quotes inside snippets e.g. "{\"event\":\"memory.write_u8\",\"address\":143898849,\"value\":0}"
+snippets:
+   unrender_npc: "{\"event\":\"memory.write_u8\",\"address\":143898849,\"value\":0}"
+   rerender_npc: "{\"event\":\"memory.write_u8\",\"address\":143898849,\"value\":32}"
+      
+

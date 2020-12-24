@@ -25,7 +25,7 @@ public class TwitchConfiguration {
     
     private String prefix;
 
-
+    private Map<String, String> snippets;
 
 
     public Map<String, String> getBot() {
@@ -84,6 +84,30 @@ public class TwitchConfiguration {
 		this.prefix = prefix;
 	}
     
+    public Map<String, String> getSnippets() {
+		return snippets;
+	}
+
+	public void setSnippets(Map<String, String> sippets) {
+		this.snippets = sippets;
+	}
+	
+	
+	//unpack methods to clean up chain method calls.
+	
+	/**
+	 * Check if a feature is only usable by mods. 
+	 * @param feature
+	 * @return
+	 */
+	public boolean isModOnly(String feature) {
+		return getFeatures().get(feature).isModOnly();
+	}
+	
+	public TwitchFeature getFeature(String feature) {
+		return getFeatures().get(feature);
+	}
+	
     @Override
 	public String toString() {
 		return String.format("""
@@ -104,4 +128,6 @@ public class TwitchConfiguration {
 				features.get("twitch_command_is_live").getName(),
 				features.get("twitch_command_is_live").getChannels());
 	}
+
+	
 }
