@@ -5,6 +5,11 @@
 	<groupId>net.pccb</groupId>
 	<artifactId>ppssppftpbot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<properties>
+		<maven.compiler.target>1.15</maven.compiler.target>
+		<maven.compiler.source>1.15</maven.compiler.source>
+	</properties>
 
 	<repositories>
 		<repository>
