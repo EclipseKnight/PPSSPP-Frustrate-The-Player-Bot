@@ -1,9 +1,17 @@
 package ppssppftpbot.pccb.net.websocket;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.client.WebSocketClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -15,14 +23,28 @@ public class WebSocketHandler {
 	
 	public static WebSocketClient ppssppClient;
 	
+	/**
+	 * Used to prevent reconnect spam. Only allow 1 reconnect attempt at a time. 
+	 */
 	public static boolean attemptingReconnect = false;
+	
+	public static URI serverUri;
 	
 	public WebSocketHandler() {
 		// Load Configuration
 		loadConfiguration();
 		System.out.println(configuration.toString());
 		// Creates a new WebSocketClient from the PPSSPPClient
-		ppssppClient = new PPSSPPClient(configuration.getServerUri());
+		serverUri = configuration.getServerUri();
+		
+		// Check if address is to obtained automatically or not.
+		if (serverUri.toString().contains(":auto")) {
+			autoConnect();
+		} else {
+			ppssppClient = new PPSSPPClient(serverUri);
+			connect();
+		}
+
 	}
 	
 	
@@ -31,14 +53,16 @@ public class WebSocketHandler {
 	 */
 	public void connect() {
 		// Connects to the WebSocket server
-		ppssppClient.connect();
+		if (ppssppClient != null)
+			ppssppClient.connect();
 	}
 	
 	/**
 	 * Initiates the websocket close handshake
 	 */
 	public void close() {
-		ppssppClient.close();
+		if (ppssppClient != null)
+			ppssppClient.close();
 	}
 	
 	
@@ -56,7 +80,7 @@ public class WebSocketHandler {
 		// Confirm there is already an attempt at a reconnect to avoid creating multiple client instances
 		attemptingReconnect = true;
 		
-		ppssppClient = new PPSSPPClient(configuration.getServerUri());
+		ppssppClient = new PPSSPPClient(serverUri);
 		
 		boolean result = false;
 		try {
@@ -96,8 +120,38 @@ public class WebSocketHandler {
 	 */
 	public void send(byte[] data) {
 		ppssppClient.send(data);
-		
 	}
+	
+	
+	/**
+	 * Automatically obatain the ip and port combo for the running debugger on the network;
+	 * Utilizes the existing site made by Unknown. If the site ever goes down the manual
+	 * mode is still available.
+	 */
+	public void autoConnect() {
+		try {
+			// create and read the line from the site into a String variable. 
+			URL report = new URL("https://report.ppsspp.org/match/list");
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(report.openStream()));
+			
+			// removes the open and closing braket which may interfere with the json parser
+			String line = in.readLine();
+			line = line.replace("[", "").replace("]", "");
+			
+			// parses the json object to be fed into a new URI.
+			JSONObject obj = new JSONObject(line);
+			
+			serverUri = new URI("ws://" + obj.getString("ip") + ":" + obj.getInt("p") + "/debugger");
+			
+			//create a websocket client pointing to the new uri.
+			ppssppClient = new PPSSPPClient(serverUri);
+			connect();
+		} catch (IOException | JSONException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
      * Load the Configuration

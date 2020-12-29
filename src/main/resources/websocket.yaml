@@ -5,8 +5,8 @@
 #                                                                                      #
 ########################################################################################
 
-# WebSocket server uri
-server_uri: ws://localhost:57197/debugger
+# WebSocket server uri (ip:port, set port to "auto" for it to find it automatically)
+server_uri: ws://localhost:auto/debugger
 
 # How long it tries to reconnect before it times out (seconds) 
 # Reconnect can fail earlier than the time set. Reason for this is in case of a slow connection. 

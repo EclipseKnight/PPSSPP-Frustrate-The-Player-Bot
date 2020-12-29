@@ -5,7 +5,7 @@
 	<groupId>net.pccb</groupId>
 	<artifactId>ppssppftpbot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
+
 	<properties>
 		<maven.compiler.target>1.15</maven.compiler.target>
 		<maven.compiler.source>1.15</maven.compiler.source>
@@ -42,5 +42,14 @@
 			<artifactId>Java-WebSocket</artifactId>
 			<version>1.5.1</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20201115</version>
+		</dependency>
+
+
 	</dependencies>
 </project>

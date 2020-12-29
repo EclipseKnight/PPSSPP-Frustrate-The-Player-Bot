@@ -15,6 +15,5 @@ public class Launcher {
 		twitchBot.start();
 		
 		socketHandler = new WebSocketHandler();
-		socketHandler.connect();
 	}
 }
