@@ -144,11 +144,18 @@ public class WebSocketHandler {
 			
 			serverUri = new URI("ws://" + obj.getString("ip") + ":" + obj.getInt("p") + "/debugger");
 			
-			//create a websocket client pointing to the new uri.
+			// create a websocket client pointing to the new uri.
 			ppssppClient = new PPSSPPClient(serverUri);
 			connect();
+			
+			// close inputstream.
+			in.close();
 		} catch (IOException | JSONException | URISyntaxException e) {
-			e.printStackTrace();
+			System.out.println("Failed to automatically connect.");
+			System.out.println();
+			System.out.println("Make sure the debugger is running on the connected network or"
+					+ " try to manually connect by setting the port in the websocket.yaml config.");
+//			e.printStackTrace();
 		}
 	}
 	
