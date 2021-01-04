@@ -34,15 +34,19 @@ public class TwitchBot {
         // Load Configuration
         loadConfiguration();
 
+        if (configuration.getApi().get("twitch_client_id") == null 
+        		|| configuration.getApi().get("twitch_client_secret") == null 
+        		|| configuration.getCredentials().get("irc") == null) {
+        	Logger.log(Level.FATAL, "Twitch id, secret, or irc token is not set. Check the twitchbot.yaml keys: twitch_client_irc, twitch_client_id, twitch_client_id values.");
+        	Logger.log(Level.FATAL, "Exiting...");
+        	System.exit(1);
+        }
+        
         TwitchClientBuilder clientBuilder = TwitchClientBuilder.builder();
 
-        //region Auth
-        OAuth2Credential credential = new OAuth2Credential(
-                "twitch",
-                configuration.getCredentials().get("irc")
-        );
-        //endregion
-
+        //check oauth token
+        OAuth2Credential credential = new OAuth2Credential("twitch", configuration.getCredentials().get("irc"));
+        
         //region TwitchClient
         twitchClient = clientBuilder
                 .withClientId(configuration.getApi().get("twitch_client_id"))
@@ -91,7 +95,7 @@ public class TwitchBot {
 
         // Register Event-based features
 		WriteChannelChatToConsole writeChannelChatToConsole = new WriteChannelChatToConsole(eventHandler);
-		ChannelCommandHandler channelCommandhandler = new ChannelCommandHandler(eventHandler);
+		ChannelCommandHandler channelCommandHandler = new ChannelCommandHandler(eventHandler);
 		
 		twitchClient.getClientHelper().enableStreamEventListener(configuration.getListenerChannels());
     }
@@ -143,7 +147,9 @@ public class TwitchBot {
 		}
     }
 
-    
+    /**
+     * starts the twitch bot by connecting to all of the set channels.
+     */
     public void start() {
         // Connect to all channels
         for (String channel : configuration.getChannels()) {
