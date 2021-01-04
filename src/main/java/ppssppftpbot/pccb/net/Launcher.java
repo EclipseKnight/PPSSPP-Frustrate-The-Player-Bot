@@ -15,7 +15,7 @@ public class Launcher {
 	public static String configPath = System.getProperty("user.dir");
 	
 	public static void main(String[] args) {
-		// allows ANSI escape sequences to format console output. For loggers.
+		// allows ANSI escape sequences to format console output. For loggers. aka PRETTY COLORS
 		AnsiConsole.systemInstall();
 		
 		twitchBot = new TwitchBot();
