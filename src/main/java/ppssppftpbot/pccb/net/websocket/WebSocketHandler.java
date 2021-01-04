@@ -1,12 +1,18 @@
 package ppssppftpbot.pccb.net.websocket;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.client.WebSocketClient;
@@ -15,6 +21,10 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import ppssppftpbot.pccb.net.Launcher;
+import ppssppftpbot.pccb.net.Logger;
+import ppssppftpbot.pccb.net.Logger.Level;
 
 public class WebSocketHandler {
 
@@ -33,7 +43,7 @@ public class WebSocketHandler {
 	public WebSocketHandler() {
 		// Load Configuration
 		loadConfiguration();
-		System.out.println(configuration.toString());
+		Logger.log(Level.INFO, configuration.toString());
 		// Creates a new WebSocketClient from the PPSSPPClient
 		serverUri = configuration.getServerUri();
 		
@@ -71,11 +81,10 @@ public class WebSocketHandler {
 	 */
 	public boolean reconnect() {
 		if (attemptingReconnect) {
-			System.out.println("A reconnect attempt is in process.");
+			Logger.log(Level.INFO, "A reconnect attempt is in process.");
 			return false;
 		}
-		
-		System.out.println("Attempting to reconnect...");
+		Logger.log(Level.INFO, "Attempting to reconnect...");
 		
 		// Confirm there is already an attempt at a reconnect to avoid creating multiple client instances
 		attemptingReconnect = true;
@@ -90,7 +99,7 @@ public class WebSocketHandler {
 		}
 		
 		if (!result) {
-			System.out.println("WebSocket failed to reconnect before " + WebSocketHandler.configuration.getWebSocketReconnectTimeout() + " seconds.");
+			Logger.log(Level.WARN, "WebSocket failed to reconnect before " + WebSocketHandler.configuration.getWebSocketReconnectTimeout() + " seconds.");
 		}
 		
 		attemptingReconnect = false;
@@ -103,7 +112,7 @@ public class WebSocketHandler {
 	 */
 	public void send(String text) {
 		if (ppssppClient.isClosed()) {
-			System.out.println("WebSocket is disconnected. Attempting to reconnect...");
+			Logger.log(Level.ERROR, "WebSocket is disconnected. Attempting to reconnect...");
 			
 			if (!reconnect()) {
 				return;
@@ -111,7 +120,7 @@ public class WebSocketHandler {
 		}
 			
 		ppssppClient.send(text);
-		System.out.println(text);
+		 Logger.log(Level.INFO, text);
 	}
 	
 	/**
@@ -151,11 +160,9 @@ public class WebSocketHandler {
 			// close inputstream.
 			in.close();
 		} catch (IOException | JSONException | URISyntaxException e) {
-			System.out.println("Failed to automatically connect.");
-			System.out.println();
-			System.out.println("Make sure the debugger is running on the connected network or"
+			Logger.log(Level.WARN, "Failed to automatically connect.");
+			Logger.log(Level.WARN, "Make sure the debugger is running on the connected network or"
 					+ " try to manually connect by setting the port in the websocket.yaml config.");
-//			e.printStackTrace();
 		}
 	}
 	
@@ -164,16 +171,45 @@ public class WebSocketHandler {
      * Load the Configuration
      */
     public static void loadConfiguration() {
-        try {
-            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            InputStream is = classloader.getResourceAsStream("websocket.yaml");
-
+    	
+    	File webSocketConfig = new File(Launcher.configPath + File.separator + "websocket.yaml");
+    	
+    	try {
+    		
+    		if (!webSocketConfig.exists()) {
+        		generateConfig();
+        	}
+        	
+            InputStream is = new BufferedInputStream(new FileInputStream(webSocketConfig));
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             configuration = mapper.readValue(is, WebSocketConfiguration.class);
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Unable to load Configuration ... Exiting.");
+            Logger.log(Level.FATAL, "Unable to load Configuration ... Exiting.");
             System.exit(1);
         }
+    }
+    
+    
+    /**
+     * Generates config file.
+     */
+    public static void generateConfig() {
+    	
+        try {
+        	Logger.log(Level.WARN, "Missing websocket.yaml. Generating new config...");
+        	ClassLoader classloader = WebSocketHandler.class.getClassLoader();
+        	
+        	// copies websocket.yaml template to current working directory.
+            InputStream original = classloader.getResourceAsStream("websocket.yaml");
+            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "websocket.yaml").toURI());
+          
+            Logger.log(Level.WARN, "Generating config... Source:" + original + ", Target:" + copy);
+			Files.copy(original, copy);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.log(Level.DEBUG, "Failed to generate websocket.yaml...");
+		}
     }
 }

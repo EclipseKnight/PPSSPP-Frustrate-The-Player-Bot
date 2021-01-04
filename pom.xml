@@ -7,8 +7,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<maven.compiler.target>1.15</maven.compiler.target>
-		<maven.compiler.source>1.15</maven.compiler.source>
+		<maven.compiler.target>15</maven.compiler.target>
+		<maven.compiler.source>15</maven.compiler.source>
 	</properties>
 
 	<repositories>
@@ -51,5 +51,73 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+		<dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
 	</dependencies>
+
+	<build>
+		<defaultGoal>clean package</defaultGoal>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- Building an executable jar -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>ppssppftpbot.pccb.net.Launcher</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>

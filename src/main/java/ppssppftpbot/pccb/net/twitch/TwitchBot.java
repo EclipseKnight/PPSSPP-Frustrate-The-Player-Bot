@@ -1,6 +1,13 @@
 package ppssppftpbot.pccb.net.twitch;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -9,6 +16,9 @@ import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 
+import ppssppftpbot.pccb.net.Launcher;
+import ppssppftpbot.pccb.net.Logger;
+import ppssppftpbot.pccb.net.Logger.Level;
 import ppssppftpbot.pccb.net.twitch.commands.ChannelCommandHandler;
 import ppssppftpbot.pccb.net.twitch.features.WriteChannelChatToConsole;
 
@@ -17,6 +27,8 @@ public class TwitchBot {
 	public static TwitchConfiguration configuration;
 	
 	public static TwitchClient twitchClient;
+	
+	
 	
 	public TwitchBot() {
         // Load Configuration
@@ -88,24 +100,55 @@ public class TwitchBot {
      * Load the Configuration
      */
     public static void loadConfiguration() {
-        try {
-            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            InputStream is = classloader.getResourceAsStream("twitchbot.yaml");
-
+    	
+    	File twitchBotConfig = new File(Launcher.configPath + File.separator + "twitchbot.yaml");
+    	
+    	try {
+    		
+    		if (!twitchBotConfig.exists()) {
+        		generateConfig();
+        	}
+        	
+            InputStream is = new BufferedInputStream(new FileInputStream(twitchBotConfig));
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             configuration = mapper.readValue(is, TwitchConfiguration.class);
+            
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Unable to load Configuration ... Exiting.");
+            Logger.log(Level.FATAL, "Unable to load configuration... Exiting.");
             System.exit(1);
         }
+    	
+    }
+    
+    /**
+     * Generates config file.
+     */
+    public static void generateConfig() {
+    	
+        try {
+        	Logger.log(Level.WARN, "Missing twitchbot.yaml. Generating new config...");
+        	ClassLoader classloader = TwitchBot.class.getClassLoader();
+        	
+        	// copies twitchbot.yaml template to current working directory.
+        	InputStream original = classloader.getResourceAsStream("twitchbot.yaml");
+            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "twitchbot.yaml").toURI());
+          
+            Logger.log(Level.WARN, "Generating config... Source:" + original + ", Target:" + copy);
+            Files.copy(original, copy);
+            
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.log(Level.ERROR, "Failed to generate twitchbot.yaml...");
+		}
     }
 
+    
     public void start() {
         // Connect to all channels
         for (String channel : configuration.getChannels()) {
             twitchClient.getChat().joinChannel(channel);
-            twitchClient.getChat().sendMessage(channel, "Bot started.");
+//            twitchClient.getChat().sendMessage(channel, "Bot started.");
         }
     }
 }
