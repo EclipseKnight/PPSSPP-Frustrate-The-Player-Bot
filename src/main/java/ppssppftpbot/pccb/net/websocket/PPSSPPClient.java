@@ -7,8 +7,8 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 
 import ppssppftpbot.pccb.net.Launcher;
-import ppssppftpbot.pccb.net.Logger;
-import ppssppftpbot.pccb.net.Logger.Level;
+import ppssppftpbot.pccb.net.logger.Logger;
+import ppssppftpbot.pccb.net.logger.Logger.Level;
 
 public class PPSSPPClient extends WebSocketClient {
 	

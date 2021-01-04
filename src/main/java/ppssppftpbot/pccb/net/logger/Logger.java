@@ -1,4 +1,4 @@
-package ppssppftpbot.pccb.net;
+package ppssppftpbot.pccb.net.logger;
 
 /**
  * Not going to bother user an existing logger since this project is riddled

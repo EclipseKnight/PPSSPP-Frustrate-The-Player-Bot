@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import ppssppftpbot.pccb.net.Launcher;
-import ppssppftpbot.pccb.net.Logger;
-import ppssppftpbot.pccb.net.Logger.Level;
+import ppssppftpbot.pccb.net.logger.Logger;
+import ppssppftpbot.pccb.net.logger.Logger.Level;
 
 public class WebSocketHandler {
 

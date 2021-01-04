@@ -17,8 +17,8 @@ import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 
 import ppssppftpbot.pccb.net.Launcher;
-import ppssppftpbot.pccb.net.Logger;
-import ppssppftpbot.pccb.net.Logger.Level;
+import ppssppftpbot.pccb.net.logger.Logger;
+import ppssppftpbot.pccb.net.logger.Logger.Level;
 import ppssppftpbot.pccb.net.twitch.commands.ChannelCommandHandler;
 import ppssppftpbot.pccb.net.twitch.features.WriteChannelChatToConsole;
 

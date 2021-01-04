@@ -3,8 +3,8 @@ package ppssppftpbot.pccb.net.twitch.features;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 
-import ppssppftpbot.pccb.net.Logger;
-import ppssppftpbot.pccb.net.Logger.Level;
+import ppssppftpbot.pccb.net.logger.Logger;
+import ppssppftpbot.pccb.net.logger.Logger.Level;
 
 public class WriteChannelChatToConsole {
 
