@@ -9,4 +9,4 @@ Of course, if you know the appropriate memory addresses of any game you can mani
 e.g. Removing items from the players inventory, making enemies invisible, setting the players health to 10%, etc.
 
 
-![example usage](https://imgur.com/MN1K7Ys)
+![example usage](https://i.imgur.com/MN1K7Ys.png)
