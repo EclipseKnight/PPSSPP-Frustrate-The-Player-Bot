@@ -172,7 +172,11 @@ public class WebSocketHandler {
      */
     public static void loadConfiguration() {
     	
-    	File webSocketConfig = new File(Launcher.configPath + File.separator + "websocket.yaml");
+    	File webSocketConfig = new File(Launcher.configPath + File.separator + "configs" + File.separator +  "websocket.yaml");
+
+    	if (new File(Launcher.configPath + File.separator + "configs").mkdir()) {
+    		Logger.log(Level.WARN, "Generating configs directory...");
+    	}
     	
     	try {
     		
@@ -202,9 +206,9 @@ public class WebSocketHandler {
         	
         	// copies websocket.yaml template to current working directory.
             InputStream original = classloader.getResourceAsStream("websocket.yaml");
-            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "websocket.yaml").toURI());
+            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "configs" + File.separator + "websocket.yaml").toURI());
           
-            Logger.log(Level.WARN, "Generating config... Source:" + original + ", Target:" + copy);
+            Logger.log(Level.WARN, "Generating config at " + copy);
 			Files.copy(original, copy);
 			
 		} catch (IOException e) {

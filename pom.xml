@@ -64,6 +64,12 @@
 			<version>2.1.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/io.jsondb/jsondb-core -->
+		<dependency>
+			<groupId>io.jsondb</groupId>
+			<artifactId>jsondb-core</artifactId>
+			<version>1.0.106</version>
+		</dependency>
 	</dependencies>
 
 	<build>

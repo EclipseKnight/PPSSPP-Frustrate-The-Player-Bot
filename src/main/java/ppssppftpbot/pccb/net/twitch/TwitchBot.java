@@ -105,7 +105,12 @@ public class TwitchBot {
      */
     public static void loadConfiguration() {
     	
-    	File twitchBotConfig = new File(Launcher.configPath + File.separator + "twitchbot.yaml");
+    	
+    	File twitchBotConfig = new File(Launcher.configPath + File.separator + "configs" + File.separator + "twitchbot.yaml");
+    	
+    	if (new File(Launcher.configPath + File.separator + "configs").mkdir()) {
+    		Logger.log(Level.WARN, "Generating configs directory...");
+    	}
     	
     	try {
     		
@@ -136,9 +141,9 @@ public class TwitchBot {
         	
         	// copies twitchbot.yaml template to current working directory.
         	InputStream original = classloader.getResourceAsStream("twitchbot.yaml");
-            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "twitchbot.yaml").toURI());
+            Path copy = Paths.get(new File(Launcher.configPath + File.separator + "configs" + File.separator + "twitchbot.yaml").toURI());
           
-            Logger.log(Level.WARN, "Generating config... Source:" + original + ", Target:" + copy);
+            Logger.log(Level.WARN, "Generating config at " + copy);
             Files.copy(original, copy);
             
 		} catch (IOException e) {
