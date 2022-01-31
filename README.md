@@ -1,4 +1,4 @@
-# Welcome to PPSSPP Fuck The Player Bot.
+# Welcome to PPSSPP Frustrate The Player Bot.
 ## a.k.a ppssppftpbot
 
 This program utilizes the PPSSPP Remote Debugger tool to send and receive events to and from a ppsspp game.
