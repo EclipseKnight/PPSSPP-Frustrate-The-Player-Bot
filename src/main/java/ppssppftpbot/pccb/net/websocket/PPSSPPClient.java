@@ -13,7 +13,6 @@ import ppssppftpbot.pccb.net.logger.Logger.Level;
 public class PPSSPPClient extends WebSocketClient {
 	
 	
-
 	public PPSSPPClient(URI serverUri, Draft draft) {
 		super(serverUri, draft);
 	}
@@ -38,10 +37,11 @@ public class PPSSPPClient extends WebSocketClient {
 			Launcher.socketHandler.reconnect();
 		}
 	}
-
+	
 	@Override
 	public void onMessage(String message) {
 		Logger.log(Level.INFO, "received message: " + message);
+		Launcher.socketHandler.onMessage(message);
 	}
 	
 	@Override

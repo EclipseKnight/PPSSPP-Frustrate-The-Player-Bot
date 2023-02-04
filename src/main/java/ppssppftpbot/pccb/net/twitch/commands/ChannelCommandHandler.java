@@ -6,18 +6,20 @@ import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.github.twitch4j.common.enums.CommandPermission;
 
+import ppssppftpbot.pccb.net.logger.Logger;
+import ppssppftpbot.pccb.net.logger.Logger.Level;
 import ppssppftpbot.pccb.net.twitch.TwitchBot;
 
 public class ChannelCommandHandler {
 
 	public ChannelCommandHandler(SimpleEventHandler eventHandler) {
-		eventHandler.onEvent(ChannelMessageEvent.class, event -> onChannelMessage(event));
+		eventHandler.onEvent(ChannelMessageEvent.class, this::onChannelMessage);
 	}
 
 	public void onChannelMessage(ChannelMessageEvent event) {
-		String msg = event.getMessage().toLowerCase();
+		String msg = event.getMessage();
 		String prefix = TwitchBot.configuration.getPrefix();
-		
+		Logger.log(Level.INFO, msg);
 		//Because Switch cases can't use non-constant values. I had to go with the less clean if (argument equals command name) approach. 		 
 		
 		// check if message is a command attempt. 
@@ -49,7 +51,7 @@ public class ChannelCommandHandler {
 				}
 				
 				// if its not a snippet it will send the argument assuming its a manual attempt with no snippet. 
-				TwitchCommandWebSocketSend.execute(event, arg);
+				TwitchCommandWebSocketSend.execute(event, arg.stripLeading());
 			}
 		}
 	}

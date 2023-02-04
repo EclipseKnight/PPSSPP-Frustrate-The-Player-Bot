@@ -35,15 +35,17 @@ public class Logger {
      * <b>SUCCCESS</b> - events that indicate successfully completing tasks.
      * <br>
      * <b>CHAT</b> - a twitch chat message.
+     * <b>OUTPUT<b> - for console output messages like prints.
      * @author EclipseKnight
      *
      */
 	public enum Level {
-		DEBUG, INFO, WARN, ERROR, FATAL, SUCCESS, CHAT
+		DEBUG, INFO, WARN, ERROR, FATAL, SUCCESS, CHAT, OUTPUT
 	}
 
 	public static void log(Level level, String message) {
 		switch (level) {
+		case OUTPUT -> System.out.println(WHITE_BRIGHT + "[" + level.toString() + "]" + message + RESET);
 		case CHAT -> System.out.println(PURPLE + "[" + level.toString() + "]" + message + RESET);
 		case SUCCESS -> System.out.println(GREEN_BRIGHT + "[" + level.toString() + "]" + message + RESET);
 		case DEBUG, INFO -> System.out.println(WHITE_BRIGHT + "[" + level.toString() + "]" + message + RESET);

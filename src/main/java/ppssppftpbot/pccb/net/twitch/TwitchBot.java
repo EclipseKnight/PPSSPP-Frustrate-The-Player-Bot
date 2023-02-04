@@ -15,11 +15,14 @@ import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
+import com.github.twitch4j.helix.domain.User;
 
 import ppssppftpbot.pccb.net.Launcher;
 import ppssppftpbot.pccb.net.logger.Logger;
 import ppssppftpbot.pccb.net.logger.Logger.Level;
 import ppssppftpbot.pccb.net.twitch.commands.ChannelCommandHandler;
+import ppssppftpbot.pccb.net.twitch.events.PollHandler;
+import ppssppftpbot.pccb.net.twitch.features.TwitchAPI;
 import ppssppftpbot.pccb.net.twitch.features.WriteChannelChatToConsole;
 
 public class TwitchBot {
@@ -28,7 +31,7 @@ public class TwitchBot {
 	
 	public static TwitchClient twitchClient;
 	
-	
+	public static OAuth2Credential credential;
 	
 	public TwitchBot() {
         // Load Configuration
@@ -45,7 +48,7 @@ public class TwitchBot {
         TwitchClientBuilder clientBuilder = TwitchClientBuilder.builder();
 
         //check oauth token
-        OAuth2Credential credential = new OAuth2Credential("twitch", configuration.getCredentials().get("irc"));
+        credential = new OAuth2Credential("twitch", configuration.getCredentials().get("irc"));
         
         //region TwitchClient
         twitchClient = clientBuilder
@@ -63,22 +66,12 @@ public class TwitchBot {
                  * Don't expect a bunch of features enabling it
                  */
                 .withEnableGraphQL(true)
-                /*
-                 * Kraken is going to be deprecated
-                 * see : https://dev.twitch.tv/docs/v5/#which-api-version-can-you-use
-                 * It is only here so you can call methods that are not (yet)
-                 * implemented in Helix
-                 */
-                .withEnableKraken(true)
+
+                .withEnablePubSub(true)
                 /*
                  * Set default client id/secret pair for helix endpoints
                  */
                 .withDefaultAuthToken(credential)
-                
-                /*
-                 * Bit events and stuff like that.
-                 */
-//                .withEnablePubSub(true)
                 /*
                  * Build the TwitchClient Instance
                  */
@@ -96,8 +89,15 @@ public class TwitchBot {
         // Register Event-based features
 		WriteChannelChatToConsole writeChannelChatToConsole = new WriteChannelChatToConsole(eventHandler);
 		ChannelCommandHandler channelCommandHandler = new ChannelCommandHandler(eventHandler);
+		PollHandler pollHandler = new PollHandler(eventHandler);
 		
 		twitchClient.getClientHelper().enableStreamEventListener(configuration.getListenerChannels());
+		
+		//set poll listeners for all channels
+		for (String ch: configuration.getListenerChannels()) {
+			User user = TwitchAPI.getTwitchUser(ch);
+			twitchClient.getPubSub().listenForPollEvents(null, user.getId());
+		}
     }
 
     /**
@@ -154,7 +154,7 @@ public class TwitchBot {
         // Connect to all channels
         for (String channel : configuration.getChannels()) {
             twitchClient.getChat().joinChannel(channel);
-//            twitchClient.getChat().sendMessage(channel, "Bot started.");
+            twitchClient.getChat().sendMessage(channel, "Bot started.");
         }
     }
 }

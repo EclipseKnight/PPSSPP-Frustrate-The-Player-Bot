@@ -11,10 +11,10 @@ public class WriteChannelChatToConsole {
     /**
      * Register events of this class with the EventManager/EventHandler
      *
-     * @param SimpleEventHandler eventHandler 
+     * @param eventHandler eventHandler
      */
     public WriteChannelChatToConsole(SimpleEventHandler eventHandler) {
-        eventHandler.onEvent(ChannelMessageEvent.class, event -> onChannelMessage(event));
+        eventHandler.onEvent(ChannelMessageEvent.class, this::onChannelMessage);
     }
 
     /**

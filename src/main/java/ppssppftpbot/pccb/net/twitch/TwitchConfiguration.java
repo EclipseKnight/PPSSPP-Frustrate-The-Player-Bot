@@ -1,13 +1,13 @@
 package ppssppftpbot.pccb.net.twitch;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import java.util.List;
 import java.util.Map;
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitchConfiguration {
 
@@ -27,6 +27,7 @@ public class TwitchConfiguration {
 
     private Map<String, String> snippets;
 
+    private Map<String, String> scripts;
 
     public Map<String, String> getBot() {
         return bot;
@@ -92,6 +93,13 @@ public class TwitchConfiguration {
 		this.snippets = sippets;
 	}
 	
+	public Map<String, String> getScripts() {
+		return scripts;
+	}
+	
+	public void setScripts(Map<String, String> scripts) {
+		this.scripts = scripts;
+	}
 	
 	//unpack methods to clean up chain method calls.
 	
